@@ -1,0 +1,15 @@
+https://jeshocarmel.github.io/jekyll/update/2020/09/28/minikube_go_application.html#minikube
+https://artifacthub.io/packages/helm/bitnami/redis?modal=install
+https://developer.redis.com/create/kubernetes/kubernetes-operator/
+https://jeshocarmel.github.io/jekyll/update/2020/09/24/containerize_go_application.html
+https://github.com/jeshocarmel/ip_location_mapper
+
+
+Add a helm repo and deploy the cluster
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm install my-release bitnami/redis --values my-values.yml
+
+TODO check the persistance for minikube
+
+
+
