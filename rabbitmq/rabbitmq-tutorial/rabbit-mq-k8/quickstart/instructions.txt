@@ -1,0 +1,5 @@
+Quick deployment
+
+https://www.rabbitmq.com/kubernetes/operator/quickstart-operator.html
+
+WORKS

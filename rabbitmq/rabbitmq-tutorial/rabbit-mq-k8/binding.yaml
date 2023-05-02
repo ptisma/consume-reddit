@@ -1,0 +1,12 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: Binding
+metadata:
+  name: binding
+spec:
+  # vhost: "/test-vhost" # default to '/' if not provided
+  source: topic-a # an existing exchange
+  destination: test # an existing queue or exchange
+  destinationType: queue # can be 'queue' or 'exchange'
+  routingKey: "a-routing-key"
+  rabbitmqClusterReference:
+    name: test # rabbitmqCluster must exist in the same namespace as this resource

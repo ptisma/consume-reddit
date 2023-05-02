@@ -1,0 +1,19 @@
+https://www.sqlshack.com/getting-started-with-postgresql-on-docker/
+
+
+
+docker pull postgres
+
+docker run -e POSTGRES_PASSWORD=Welcome4$ -p 5432:5432 postgres
+
+docker pull dpage/pgadmin4
+
+docker run -e PGADMIN_DEFAULT_EMAIL=test@mail.com -e PGADMIN_DEFAULT_PASSWORD=test1234 -p 8080:80 dpage/pgadmin4
+
+docker inspect <postgres container>
+
+
+Create a server registration, use IP as host address, use postgres as user and password that you set 
+
+
+

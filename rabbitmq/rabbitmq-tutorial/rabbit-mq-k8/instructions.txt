@@ -1,0 +1,29 @@
+Deploy RabbitMq to k8 cluster
+https://www.rabbitmq.com/kubernetes/operator/operator-overview.html
+
+Installing RabbitMQ Cluster Operator in a Kubernetes Cluster:
+helm repo add bitnami https://charts.bitnami.com/bitnami
+helm install my-release bitnami/rabbitmq-cluster-operator
+
+https://www.rabbitmq.com/kubernetes/operator/install-operator.html
+https://github.com/bitnami/charts/tree/main/bitnami/rabbitmq-cluster-operator
+
+
+
+Using RabbitMQ Cluster Kubernetes Operator:
+https://www.rabbitmq.com/kubernetes/operator/using-operator.html
+https://github.com/rabbitmq/cluster-operator/tree/main/docs/examples
+
+
+Installing RabbitMQ Messaging Topology Operator:
+
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.3.1/cert-manager.yaml
+
+kubectl apply -f https://github.com/rabbitmq/messaging-topology-operator/releases/latest/download/messaging-topology-operator-with-certmanager.yaml
+
+https://www.rabbitmq.com/kubernetes/operator/install-topology-operator.html
+
+
+
+
+
