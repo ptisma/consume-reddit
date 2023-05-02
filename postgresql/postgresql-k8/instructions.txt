@@ -1,0 +1,26 @@
+https://phoenixnap.com/kb/postgresql-kubernetes
+https://www.airplane.dev/blog/deploy-postgres-on-kubernetes
+
+
+From scratch approach:
+0. kubectl create namespace postgres && kubectl config set-context --current --namespace=postgres
+1. Apply ConfigMap configmap.yaml
+kubectl apply -f configmap.yaml
+2. Apply PersistentVolume and PersistentVolumeClaim volume.yaml
+kubectl apply -f volume.yaml
+3. Apply Deployment deployment.yaml
+kubectl apply -f deployment.yaml
+4. Apply Service service.yaml
+kubectl apply -f service.yaml
+
+5. Connect to DB
+kubectl exec -it [pod-name] --  psql -h localhost -U admin --password -p 5432 postgresdb
+\l
+
+
+Checks:
+kubectl get configmap
+kubectl get pvc
+kubectl get deployments
+kubectl get pods
+kubectl get services
