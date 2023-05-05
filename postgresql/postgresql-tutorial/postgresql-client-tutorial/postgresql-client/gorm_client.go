@@ -19,7 +19,7 @@ type PostgresConfig struct {
 }
 
 func GetPostgresConfig() *PostgresConfig {
-	return &PostgresConfig{DBHost: "127.0.0.1", DBUserName: "postgres", DBUserPassword: "password123", DBName: "golang-gorm", DBPort: "6500", ServerPort: "8000", ClientOrigin: "http://localhost:3000"}
+	return &PostgresConfig{DBHost: "127.0.0.1", DBUserName: "postgres", DBUserPassword: "password123", DBName: "golang-gorm", DBPort: "6500"}
 
 }
 
@@ -34,6 +34,12 @@ func ConnectDB(config *PostgresConfig) (*gorm.DB, error) {
 	return db, err
 }
 
+type Product struct {
+	gorm.Model
+	Code  string
+	Price uint
+}
+
 func main() {
 
 	fmt.Println("Hello world")
@@ -45,5 +51,9 @@ func main() {
 		log.Fatal("Failed to connect to the Database", err)
 	}
 	fmt.Println("? Connected Successfully to the Database")
+
+	db.AutoMigrate(&Product{})
+
+	db.Create(&Product{Code: "D44", Price: 100})
 
 }
