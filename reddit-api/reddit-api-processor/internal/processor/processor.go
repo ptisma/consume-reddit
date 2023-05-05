@@ -21,7 +21,7 @@ func ConnectDB(config *config.PostgresConfig) (*gorm.DB, error) {
 	return db, err
 }
 
-func ConnectBroker(config *config.RabbitMQConfig) (*amqp.Channel, error) {
+func ConnectBroker(config *config.RabbitMQConfig) (*amqp.Channel, string, error) {
 	conn, err := amqp.Dial(config.BrokerURI)
 	if err != nil {
 		return nil, err
@@ -67,18 +67,30 @@ func ConnectBroker(config *config.RabbitMQConfig) (*amqp.Channel, error) {
 		return nil, err
 	}
 
-	return ch, err
+	return ch, q.Name, err
 
 }
 
 type Processor struct {
 	DB         *gorm.DB
 	Exchange   *amqp.Channel
+	QueueName  string
 	TopicName  string
 	RoutingKey string
 }
 
-func (p *Processor) Test() {
+func (p *Processor) ReadFromBroker() (<-chan amqp.Delivery, error) {
+	msgs, err := p.Exchange.Consume(
+		p.QueueName, // queue
+		"",          // consumer
+		true,        // auto ack
+		false,       // exclusive
+		false,       // no local
+		false,       // no wait
+		nil,         // args
+	)
+
+	return msgs, err
 
 }
 
@@ -95,8 +107,8 @@ func GetProcessor(dbConfig *config.PostgresConfig, brokerConfig *config.RabbitMQ
 		return nil, err
 	}
 
-	ch, err := ConnectBroker(brokerConfig)
+	ch, queueName, err := ConnectBroker(brokerConfig)
 
-	return &Processor{DB: db, Exchange: ch}, err
+	return &Processor{DB: db, Exchange: ch, QueueName: queueName, TopicName: brokerConfig.TopicName, RoutingKey: brokerConfig.RoutingKey}, err
 
 }
