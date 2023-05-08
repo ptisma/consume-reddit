@@ -46,15 +46,16 @@ type RabbitMQProducer struct {
 	RoutingKey string
 }
 
-func (r *RabbitMQProducer) StorePost(ctx context.Context, body string) error {
+func (r *RabbitMQProducer) StorePost(ctx context.Context, body []byte) error {
 	err := r.Exchange.PublishWithContext(ctx,
 		r.TopicName,  // exchange
 		r.RoutingKey, // routing key
 		false,        // mandatory
 		false,        // immediate
 		amqp.Publishing{
-			ContentType: "text/plain",
-			Body:        []byte(body),
+			ContentType: "application/json",
+			Body:        body,
+			Type:        "Hot",
 		})
 
 	return err

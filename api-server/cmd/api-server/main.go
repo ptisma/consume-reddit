@@ -28,7 +28,9 @@ func init() {
 	initializers.ConnectDB(&config)
 	initializers.Automigrate()
 
-	PostController = controllers.NewPostController(initializers.DB)
+	initializers.ConnectCache(&config)
+
+	PostController = controllers.NewPostController(initializers.DB, initializers.Cache)
 	PostRouteController = routes.NewRoutePostController(PostController)
 
 	server = gin.Default()

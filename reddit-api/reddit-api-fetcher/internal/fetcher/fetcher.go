@@ -63,7 +63,7 @@ func (s *SubredditFetcher) FetchToken() (Token, error) {
 
 }
 
-func (s *SubredditFetcher) FetchPosts(ctx context.Context, token Token) error {
+func (s *SubredditFetcher) FetchAndStorePosts(ctx context.Context, token Token) error {
 	var err error
 	req, err := http.NewRequest("GET", s.URL, nil)
 	if err != nil {
@@ -87,7 +87,7 @@ func (s *SubredditFetcher) FetchPosts(ctx context.Context, token Token) error {
 		//title, _, _, _ := jsonparser.Get(value, "data", "title")
 		fmt.Println("Whole post data")
 		fmt.Println(string(value))
-		err = s.Producer.StorePost(ctx, string(value))
+		err = s.Producer.StorePost(ctx, value)
 		fmt.Println(err)
 
 	})

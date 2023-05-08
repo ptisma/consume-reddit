@@ -42,30 +42,15 @@ func main() {
 		fmt.Println(err)
 	}
 
-	// for {
-	// 	for i := 1; i <= 10; i++ {
-	// 		if i%5 != 0 {
-	// 			s := strconv.Itoa(i)
-	// 			ctxTimeout, _ := context.WithTimeout(ctx, time.Second*5)
-	// 			err := producer.StorePost(ctxTimeout, s)
-	// 			if err != nil {
-	// 				fmt.Println(err)
-	// 			}
-	// 		} else {
-	// 			fmt.Println("Sleeping...")
-	// 			time.Sleep(60 * time.Second)
-	// 		}
-
-	// 	}
-	// }
-
+	// Acquire a token
 	token, err := fetcher.FetchToken()
 	if err != nil {
 		fmt.Println(err)
 	}
 	fmt.Println("token", token)
 
-	err = fetcher.FetchPosts(ctx, token)
+	// Fetch and store posts
+	err = fetcher.FetchAndStorePosts(ctx, token)
 	if err != nil {
 		fmt.Println(err)
 	}

@@ -2,9 +2,11 @@ package processor
 
 import (
 	"fmt"
+	"log"
 	"reddit-api-processor/internal/config"
 	"reddit-api-processor/internal/model"
 
+	"github.com/buger/jsonparser"
 	amqp "github.com/rabbitmq/amqp091-go"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -120,9 +122,23 @@ func (p *Processor) ReadFromBroker() (<-chan amqp.Delivery, error) {
 
 }
 
-func (p *Processor) WriteToDB() {
-	p.DB.AutoMigrate(&model.Message{})
-	p.DB.Create(&model.Message{Body: "procesor-test"})
+func (p *Processor) Process(body []byte, category string) model.Post {
+
+	title, _, _, _ := jsonparser.Get(body, "data", "title")
+	content, _, _, _ := jsonparser.Get(body, "data", "selftext")
+	category = category
+
+	post := model.Post{Title: string(title), Content: string(content), Category: category}
+
+	log.Println("Post:", post)
+
+	return post
+
+}
+
+func (p *Processor) WriteToDB(post *model.Post) {
+	p.DB.AutoMigrate(&model.Post{})
+	p.DB.Create(post)
 
 }
 
@@ -133,10 +149,10 @@ func (p *Processor) AutoMigrate() error {
 
 func GetProcessor(dbConfig *config.PostgresConfig, brokerConfig *config.RabbitMQConfig) (*Processor, error) {
 	var err error
-	err = CreateDatabase(dbConfig)
-	if err != nil {
-		return nil, err
-	}
+	// err = CreateDatabase(dbConfig)
+	// if err != nil {
+	// 	return nil, err
+	// }
 	db, err := ConnectDB(dbConfig)
 	if err != nil {
 		return nil, err
