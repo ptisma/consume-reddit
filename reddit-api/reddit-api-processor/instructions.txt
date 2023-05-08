@@ -1,0 +1,7 @@
+docker build -t reddit-api-processor-dev .
+docker run -it -e BROKER_URI='amqp://guest:guest@host.docker.internal:5672/' -e TOPIC_NAME='logs_topic' -e ROUTING_KEY='kek' -e DB_HOST_URI='host.docker.internal' -e DB_USER_NAME='postgres' -e DB_USER_PASSWORD='postgres' -e DB_NAME='test' -e DB_PORT='5435' reddit-api-processor-dev
+
+
+https://github.com/sameersbn/docker-postgresql/issues/112
+
+PORT REMAP REQUIRED DUE TO INSTALLED POSTGRE SERVICE ON MY WINDOWS LOCAL MACHINE

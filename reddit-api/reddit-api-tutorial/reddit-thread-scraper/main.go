@@ -9,6 +9,8 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+
+	"github.com/buger/jsonparser"
 )
 
 func failOnError(err error, msg string) {
@@ -71,7 +73,18 @@ func main() {
 	// failOnError(err, "BODY 2")
 	// fmt.Println(string(body))
 
-	req, err = http.NewRequest("GET", "https://oauth.reddit.com/r/croatia/hot", nil)
+	baseURL := "https://oauth.reddit.com"
+	resource := "/r/croatia/hot"
+	params := url.Values{}
+	params.Add("limit", "2")
+
+	u, _ := url.ParseRequestURI(baseURL)
+	u.Path = resource
+	u.RawQuery = params.Encode()
+	urlStr := fmt.Sprintf("%v", u) // "http://example.com/path?param1=value1&param2=value2"
+	fmt.Println("URL:", urlStr)
+
+	req, err = http.NewRequest("GET", urlStr, nil)
 	failOnError(err, "REQUEST 3")
 	req.Header.Add("Authorization", "bearer "+token.AccessToken)
 	req.Header.Add("User-Agent", "reddit-api-scraper-test:0.01 by Pepe")
@@ -82,6 +95,19 @@ func main() {
 
 	body, err = ioutil.ReadAll(res.Body)
 	failOnError(err, "BODY 3")
+	fmt.Println("Whole response")
 	fmt.Println(string(body))
+	fmt.Println("Posts")
+	value1, _, _, _ := jsonparser.Get(body, "data")
+
+	value2, _, _, _ := jsonparser.Get(value1, "children")
+	//fmt.Println(string(value2))
+
+	// Prints only titles of the posts
+	jsonparser.ArrayEach(value2, func(value []byte, dataType jsonparser.ValueType, offset int, err error) {
+		//title, _, _, _ := jsonparser.Get(value, "data", "title")
+		fmt.Println("Whole post data")
+		fmt.Println(string(value))
+	})
 
 }

@@ -1,5 +1,5 @@
 Build Docker image:
 docker build -t reddit-api-fetcher-dev .
- docker run -it -e BROKER_URI='amqp://guest:guest@host.docker.internal:5672/' -e TOPIC_NAME='logs_topic' -e ROUTING_KEY='kek' reddit-api-fetcher-dev
+docker run -it -e BROKER_URI='amqp://guest:guest@host.docker.internal:5672/' -e TOPIC_NAME='logs_topic' -e ROUTING_KEY='kek' -e REDDIT_USERNAME='beskucnik_na_feru' -e REDDIT_PASSWORD='Wizard21298' -e CLIENT_ID='95wusYL4TfUPURtBnswGQg' -e CLIENT_SECRET='qlMMTd2bN3ijKT7wrRlJtGpxQVyZ2w' -e USER_AGENT_NAME='reddit-api-scraper-test:0.01 by Pepe' -e URL='https://oauth.reddit.com/r/croatia' -e CATEGORY='hot' -e NUM_OF_POSTS='2' reddit-api-fetcher-dev
 
 

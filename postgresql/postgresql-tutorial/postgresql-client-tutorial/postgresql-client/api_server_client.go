@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"time"
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
@@ -34,33 +35,12 @@ func ConnectDB(config *PostgresConfig) (*gorm.DB, error) {
 	return db, err
 }
 
-func CreateDatabase(config *PostgresConfig) error {
-	var err error
-	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s sslmode=disable TimeZone=Asia/Shanghai", config.DBHost, config.DBPort, config.DBUserName, config.DBUserPassword)
-	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
-	if err != nil {
-		return err
-	}
-
-	createDatabaseCommand := fmt.Sprintf("CREATE DATABASE %s", config.DBName)
-
-	err = db.Exec(createDatabaseCommand).Error
-	if err != nil {
-		return err
-	}
-	sqlDB, err := db.DB()
-	if err != nil {
-		return err
-	}
-	sqlDB.Close()
-
-	return err
-}
-
-type Product struct {
-	gorm.Model
-	Code  string
-	Price uint
+type Post struct {
+	ID        uint      `gorm:"primaryKey"`
+	Title     string    `gorm:"not null"`
+	Content   string    `gorm:"not null"`
+	CreatedAt time.Time `gorm:"not null"`
+	Category  string    `gorm:"not null"`
 }
 
 func main() {
@@ -69,16 +49,19 @@ func main() {
 
 	config := GetPostgresConfig()
 
-	CreateDatabase(config)
-
 	db, err := ConnectDB(config)
 	if err != nil {
 		log.Fatal("Failed to connect to the Database", err)
 	}
 	fmt.Println("? Connected Successfully to the Database")
 
-	db.AutoMigrate(&Product{})
+	db.AutoMigrate(&Post{})
 
-	db.Create(&Product{Code: "D44", Price: 100})
+	db.Create(&Post{Title: "Test1", Content: "Hello world!", Category: "Hot"})
+
+	var posts []Post
+	db.Where("category = ? AND created_at >= ? AND created_at <= ?", "Hot", "2023-05-07", "2023-05-08").Find(&posts)
+
+	fmt.Println(posts)
 
 }

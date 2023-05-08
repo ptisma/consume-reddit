@@ -12,7 +12,9 @@ import (
 
 func ConnectDB(config *config.PostgresConfig) (*gorm.DB, error) {
 	var err error
-	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Shanghai", config.DBHost, config.DBUserName, config.DBUserPassword, config.DBName, config.DBPort)
+	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable TimeZone=Asia/Shanghai", config.DBHostURI, config.DBUsername, config.DBUserPassword, config.DBName, config.DBPort)
+
+	fmt.Println("Connection string:", dsn)
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -21,15 +23,39 @@ func ConnectDB(config *config.PostgresConfig) (*gorm.DB, error) {
 	return db, err
 }
 
+func CreateDatabase(config *config.PostgresConfig) error {
+	var err error
+	dsn := fmt.Sprintf("host=%s port=%d user=%s password=%s sslmode=disable TimeZone=Asia/Shanghai", config.DBHostURI, config.DBPort, config.DBUsername, config.DBUserPassword)
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	if err != nil {
+		return err
+	}
+
+	createDatabaseCommand := fmt.Sprintf("CREATE DATABASE %s", config.DBName)
+
+	err = db.Exec(createDatabaseCommand).Error
+	if err != nil {
+		return err
+	}
+	sqlDB, err := db.DB()
+	if err != nil {
+		return err
+	}
+	sqlDB.Close()
+
+	return err
+}
+
 func ConnectBroker(config *config.RabbitMQConfig) (*amqp.Channel, string, error) {
+	var queueName string
 	conn, err := amqp.Dial(config.BrokerURI)
 	if err != nil {
-		return nil, err
+		return nil, queueName, err
 	}
 
 	ch, err := conn.Channel()
 	if err != nil {
-		return nil, err
+		return nil, queueName, err
 	}
 
 	err = ch.ExchangeDeclare(
@@ -42,7 +68,7 @@ func ConnectBroker(config *config.RabbitMQConfig) (*amqp.Channel, string, error)
 		nil,              // arguments
 	)
 	if err != nil {
-		return nil, err
+		return nil, queueName, err
 	}
 
 	q, err := ch.QueueDeclare(
@@ -54,7 +80,7 @@ func ConnectBroker(config *config.RabbitMQConfig) (*amqp.Channel, string, error)
 		nil,   // arguments
 	)
 	if err != nil {
-		return nil, err
+		return nil, queueName, err
 	}
 
 	err = ch.QueueBind(
@@ -64,7 +90,7 @@ func ConnectBroker(config *config.RabbitMQConfig) (*amqp.Channel, string, error)
 		false,
 		nil)
 	if err != nil {
-		return nil, err
+		return nil, queueName, err
 	}
 
 	return ch, q.Name, err
@@ -96,12 +122,21 @@ func (p *Processor) ReadFromBroker() (<-chan amqp.Delivery, error) {
 
 func (p *Processor) WriteToDB() {
 	p.DB.AutoMigrate(&model.Message{})
-	p.DB.Create(&model.Message{Body: "kek"})
+	p.DB.Create(&model.Message{Body: "procesor-test"})
+
+}
+
+func (p *Processor) AutoMigrate() error {
+	return p.DB.AutoMigrate(&model.Message{})
 
 }
 
 func GetProcessor(dbConfig *config.PostgresConfig, brokerConfig *config.RabbitMQConfig) (*Processor, error) {
 	var err error
+	err = CreateDatabase(dbConfig)
+	if err != nil {
+		return nil, err
+	}
 	db, err := ConnectDB(dbConfig)
 	if err != nil {
 		return nil, err
