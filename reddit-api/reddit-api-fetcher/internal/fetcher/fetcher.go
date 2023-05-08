@@ -5,6 +5,7 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"net/url"
@@ -33,6 +34,8 @@ type SubredditFetcher struct {
 	BasicAuth     string
 	UserAgentName string
 	URL           string
+	Category      string
+	NumOfPosts    int
 	Client        *http.Client
 	Producer      *producer.RabbitMQProducer
 }
@@ -52,12 +55,15 @@ func (s *SubredditFetcher) FetchToken() (Token, error) {
 		return Token{}, err
 	}
 	defer res.Body.Close()
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return Token{}, err
 	}
 	var token Token
-	json.Unmarshal([]byte(body), &token)
+	err = json.Unmarshal([]byte(body), &token)
+	if err != nil {
+		return Token{}, err
+	}
 
 	return token, err
 
