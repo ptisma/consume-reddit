@@ -4,6 +4,10 @@ on:
   pull_request:
     branches:
       - main
+    paths: 
+       - 'api-server/**'
+       - 'reddit-api-fetcher/**'
+       - 'reddit-api-processor/**'
 jobs:
   Go-app:
     uses: ./.github/workflows/go-app-action.yml
