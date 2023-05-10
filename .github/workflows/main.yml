@@ -5,7 +5,32 @@ on:
     branches:
       - 'main'
 jobs:
-  BuildAndPushImages:
+  IdentifyFolderChanges:
+  # Required permissions
+  permissions: read-all
+  runs-on: ubuntu-latest
+  # Set job outputs to values from filter step
+  outputs:
+    api-server: ${{ steps.filter.outputs.api-server }}
+    reddit-api-fetcher : ${{ steps.filter.outputs.reddit-api-fetcher }}
+    reddit-api-processor: ${{ steps.filter.outputs.reddit-api-processor }}
+  steps:
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        filters: |
+          api-server:
+            - 'api-server/**'
+          reddit-api-fetcher:
+            - 'reddit-api/reddit-api-fetcher/**'
+          reddit-api-processor:
+            - 'reddit-api/reddit-api-processor/**'
+  # JOB to build api-server image and push it to the repository
+  Api-Server:
+    needs: IdentifyFolderChanges
+    if: ${{ needs.IdentifyFolderChanges.outputs.api-server == 'true' }}
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - run: docker --version
+      - run: list -l
