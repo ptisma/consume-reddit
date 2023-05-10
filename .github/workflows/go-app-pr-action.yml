@@ -1,0 +1,15 @@
+name: GitHub Actions PR to main for Go apps
+run-name: ${{ github.actor }} is creating PR to main 🚀
+on:
+  pull_request:
+    branches:
+      - main
+jobs:
+  Go-app:
+    runs-on: ubuntu-latest
+    uses: ./.github/workflows/go-app-action.yaml
+  Analaysis:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Run code analysis"
+

@@ -1,0 +1,12 @@
+name: Reusable workflow for Go application
+
+on:
+  workflow_call:
+
+jobs:
+  go-ci:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "Installing GO linter"
+      - run: echo "Running Go linter"
+      - run: echo "Compiling go"
