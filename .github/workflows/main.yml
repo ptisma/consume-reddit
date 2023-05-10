@@ -15,6 +15,7 @@ jobs:
       reddit-api-fetcher : ${{ steps.filter.outputs.reddit-api-fetcher }}
       reddit-api-processor: ${{ steps.filter.outputs.reddit-api-processor }}
     steps:
+      - uses: actions/checkout@v3
       - uses: dorny/paths-filter@v2
         id: filter
         with:
@@ -30,3 +31,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - run: ls -l
