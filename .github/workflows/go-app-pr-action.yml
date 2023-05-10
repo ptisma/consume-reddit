@@ -3,13 +3,13 @@ name: Reusable workflow GO app
 on:
   workflow_call:
     inputs:
-      workdir:
+      workdir-path:
         required: true
         type: string
 
 defaults:
   run:
-    working-directory: ${{ inputs.workdir }}
+    working-directory: ${{ inputs.workdir-path }}
 jobs:
   test:
     runs-on: ubuntu-latest
