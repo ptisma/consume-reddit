@@ -20,7 +20,32 @@
 #           ls ${{ github.workspace }}
 #       - run: echo "🍏 This job's status is ${{ job.status }}."
 
-name: test2
+# name: test2
+# run-name: ${{ github.actor }} is creating a PR on main for some go app 🚀
+# on:
+#   pull_request:
+#     branches:
+#       - 'main'
+#     paths:
+#       - '**.go'
+
+# jobs:
+#   Explore-GitHub-Actions:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+#       - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
+#       - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
+#       - name: Check out repository code
+#         uses: actions/checkout@v3
+#       - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
+#       - run: echo "🖥️ The workflow is now ready to test your code on the runner."
+#       - name: List files in the repository
+#         run: |
+#           ls ${{ github.workspace }}
+#       - run: echo "🍏 This job's status is ${{ job.status }}."
+
+name: test3
 run-name: ${{ github.actor }} is creating a PR on main for some go app 🚀
 on:
   pull_request:
@@ -30,17 +55,23 @@ on:
       - '**.go'
 
 jobs:
-  Explore-GitHub-Actions:
+  IdentifyFolderChanges:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-      - name: Check out repository code
-        uses: actions/checkout@v3
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-      - name: List files in the repository
-        run: |
-          ls ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
+      - uses: dorny/paths-filter@v2
+        id: changes
+        with:
+          filters: |
+            api-server:
+              - 'api-server/**'
+            reddit-api-fetcher:
+              - 'reddit-api/reddit-api-fetcher/**'
+            reddit-api-processor:
+              - 'reddit-api/reddit-api-processor/**'
+
+      # run only if some file in 'api-server' folder was changed
+      - if: steps.changes.outputs.api-server == 'true'
+        run: echo "Some stuff on api-server"
+      # run only if some file in 'reddit-api/reddit-api-fetcher' folder was changed
+      - if: steps.changes.outputs.src == 'true'
+        run: echo "Some stuff on reddit-api-fetcher"
