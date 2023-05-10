@@ -23,3 +23,7 @@ jobs:
     - name: list
       working-directory: ${{ inputs.workdir-path }}
       run: ls -l
+    - name: lint
+      run: echo "Go linting"
+    - name: build
+      run: echo "Go build"
