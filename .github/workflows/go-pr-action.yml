@@ -3,7 +3,7 @@ run-name: ${{ github.actor }} is creating a PR for one of Go apps on dev 🚀
 on:
   pull_request:
     branches:
-      - 'dev/**'
+      - 'dev'
     paths:
       - '**.go'
 jobs:
