@@ -81,7 +81,7 @@ jobs:
     if: ${{ needs.IdentifyFolderChanges.outputs.api-server == 'true' }}
     uses: ./.github/workflows/go-app-pr-action.yml
     with:
-      workdir-path: /apiserver
+      workdir-path: ./apiserver
   # JOB to lint and compile reddit-api-fetcher code
   Reddit-Api-Fetcher:
     needs:  IdentifyFolderChanges
