@@ -1,11 +1,9 @@
-name: Go apps PR action
-run-name: ${{ github.actor }} is creating a PR for one of Go apps on dev 🚀
+name: Main PR action
+run-name: ${{ github.actor }} is creating on main 🚀
 on:
   pull_request:
     branches:
       - 'main'
-    paths:
-      - '**.go'
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
