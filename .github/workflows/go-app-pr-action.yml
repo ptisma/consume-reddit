@@ -2,10 +2,6 @@ name: Reusable workflow GO app
 
 on:
   workflow_call:
-    inputs:
-      workdir-path:
-        required: true
-        type: string
 
 # defaults:
 #   run:
@@ -20,9 +16,10 @@ jobs:
       uses: actions/checkout@v2
     - name: list all after checkout
       run: ls -l
-    - name: list
-      working-directory: ${{ inputs.workdir-path }}
-      run: ls -l
+    - uses: actions/setup-go@v4
+      with:
+        go-version: '^1.20' # The Go version to download (if necessary) and use.
+    - run: go version
     - name: lint
       run: echo "Go linting"
     - name: build
