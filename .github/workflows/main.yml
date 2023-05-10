@@ -26,11 +26,11 @@ jobs:
           reddit-api-processor:
             - 'reddit-api/reddit-api-processor/**'
   # JOB to build api-server image and push it to the repository
-  Api-Server:
-    needs: IdentifyFolderChanges
-    if: ${{ needs.IdentifyFolderChanges.outputs.api-server == 'true' }}
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - run: docker --version
-      - run: list -l
+Api-Server:
+  needs: IdentifyFolderChanges
+  if: ${{ needs.IdentifyFolderChanges.outputs.api-server == 'true' }}
+  runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v3
+    - run: docker --version
+    - run: list -l
