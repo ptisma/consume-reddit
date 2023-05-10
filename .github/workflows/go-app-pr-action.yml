@@ -7,11 +7,13 @@ on:
         required: true
         type: string
 
-defaults:
-  run:
-    working-directory: ${{ inputs.workdir-path }}
+# defaults:
+#   run:
+#     working-directory: ${{ inputs.workdir-path }}
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - run: ls -l
+    - name: list
+      working-directory: ${{ inputs.workdir-path }}
+      run: ls -l
