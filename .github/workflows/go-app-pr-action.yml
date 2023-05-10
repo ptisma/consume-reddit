@@ -6,9 +6,8 @@ on:
       - main
 jobs:
   Go-app:
-    runs-on: ubuntu-latest
     uses: ./.github/workflows/go-app-action.yml
-  Analaysis:
+  Analysis:
     runs-on: ubuntu-latest
     steps:
       - run: echo "Run code analysis"
