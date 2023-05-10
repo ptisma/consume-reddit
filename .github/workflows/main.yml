@@ -1,0 +1,11 @@
+name: Push
+run-name: ${{ github.actor }} is creating push on main 🚀
+on:
+  push:
+    branches:
+      - 'main'
+jobs:
+  BuildAndPushImages:
+    runs-on: ubuntu-latest
+    steps:
+      - run: docker --version

@@ -22,7 +22,7 @@ var (
 func init() {
 	// Test for GitHub actions, another test
 	// test3
-	// test3 again again again eee
+	// test3 again again again eeeere
 	config, err := initializers.LoadConfig("./")
 	if err != nil {
 		log.Fatal("🚀 Could not load environment variables", err)
