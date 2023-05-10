@@ -1,0 +1,17 @@
+name: Reusable workflow GO app
+
+on:
+  workflow_call:
+    inputs:
+      config-path:
+        required: true
+        type: string
+    secrets:
+      token:
+        required: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo "Reusable workflow step"
