@@ -2,9 +2,16 @@ name: Reusable workflow GO app
 
 on:
   workflow_call:
+    inputs:
+      workdir:
+        required: true
+        type: string
 
+defaults:
+  run:
+    working-directory: ${{ inputs.workdir }}
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - run: echo "Reusable workflow step"
+    - run: ls -l

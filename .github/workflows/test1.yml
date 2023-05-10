@@ -75,18 +75,24 @@ jobs:
               - 'reddit-api/reddit-api-fetcher/**'
             reddit-api-processor:
               - 'reddit-api/reddit-api-processor/**'
-  # JOB to build and test api-server code
+  # JOB to lint and compile api-server code
   Api-Server:
     needs: IdentifyFolderChanges
     if: ${{ needs.IdentifyFolderChanges.outputs.api-server == 'true' }}
     uses: ./.github/workflows/go-app-pr-action.yml
-  # JOB to build and test reddit-api-fetcher code
+    with:
+      workdir: ./apiserver
+  # JOB to lint and compile reddit-api-fetcher code
   Reddit-Api-Fetcher:
     needs:  IdentifyFolderChanges
     if: ${{ needs.IdentifyFolderChanges.outputs.reddit-api-fetcher == 'true' }}
     uses: ./.github/workflows/go-app-pr-action.yml
-  # JOB to build and test reddit-api-processor code
+    with:
+      workdir: ./reddit-api/reddit-api-fetcher
+  # JOB to lint and compile reddit-api-processor code
   Reddit-Api-Processor:
     needs:  IdentifyFolderChanges
     if: ${{ needs.IdentifyFolderChanges.outputs.reddit-api-processor == 'true' }}
     uses: ./.github/workflows/go-app-pr-action.yml
+    with:
+      workdir: ./reddit-api/reddit-api-processor
