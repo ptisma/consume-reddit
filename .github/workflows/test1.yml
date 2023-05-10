@@ -81,18 +81,18 @@ jobs:
     if: ${{ needs.IdentifyFolderChanges.outputs.api-server == 'true' }}
     uses: ./.github/workflows/go-app-pr-action.yml
     with:
-      workdir-path: ./apiserver
+      workdir-path: /apiserver
   # JOB to lint and compile reddit-api-fetcher code
   Reddit-Api-Fetcher:
     needs:  IdentifyFolderChanges
     if: ${{ needs.IdentifyFolderChanges.outputs.reddit-api-fetcher == 'true' }}
     uses: ./.github/workflows/go-app-pr-action.yml
     with:
-      workdir-path: ./reddit-api/reddit-api-fetcher
+      workdir-path: /reddit-api/reddit-api-fetcher
   # JOB to lint and compile reddit-api-processor code
   Reddit-Api-Processor:
     needs:  IdentifyFolderChanges
     if: ${{ needs.IdentifyFolderChanges.outputs.reddit-api-processor == 'true' }}
     uses: ./.github/workflows/go-app-pr-action.yml
     with:
-      workdir-path: ./reddit-api/reddit-api-processor
+      workdir-path: /reddit-api/reddit-api-processor

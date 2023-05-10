@@ -18,7 +18,7 @@ jobs:
       run: ls -l
     - name: Checkout repository
       uses: actions/checkout@v2
-    - name: list all before checkout
+    - name: list all after checkout
       run: ls -l
     - name: list
       working-directory: ${{ inputs.workdir-path }}
