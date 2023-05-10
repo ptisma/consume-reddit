@@ -14,10 +14,12 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-    - name: list all
+    - name: list all before checkout
       run: ls -l
     - name: Checkout repository
       uses: actions/checkout@v2
+    - name: list all before checkout
+      run: ls -l
     - name: list
       working-directory: ${{ inputs.workdir-path }}
       run: ls -l
