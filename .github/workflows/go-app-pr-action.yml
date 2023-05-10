@@ -7,7 +7,7 @@ on:
 jobs:
   Go-app:
     runs-on: ubuntu-latest
-    uses: ./.github/workflows/go-app-action.yaml
+    uses: ./.github/workflows/go-app-action.yml
   Analaysis:
     runs-on: ubuntu-latest
     steps:
