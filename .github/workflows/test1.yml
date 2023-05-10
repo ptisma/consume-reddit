@@ -77,10 +77,16 @@ jobs:
               - 'reddit-api/reddit-api-processor/**'
   # JOB to build and test api-server code
   Api-Server:
+    needs: IdentifyFolderChanges
+    if: ${{ needs.changes.outputs.api-server == 'true' }}
     uses: ./.github/workflows/go-app-pr-action.yml
   # JOB to build and test reddit-api-fetcher code
   Reddit-Api-Fetcher:
+    needs:  IdentifyFolderChanges
+    if: ${{ needs.changes.outputs.reddit-api-fetcher == 'true' }}
     uses: ./.github/workflows/go-app-pr-action.yml
   # JOB to build and test reddit-api-processor code
   Reddit-Api-Processor:
+    needs:  IdentifyFolderChanges
+    if: ${{ needs.changes.outputs.reddit-api-processor == 'true' }}
     uses: ./.github/workflows/go-app-pr-action.yml
