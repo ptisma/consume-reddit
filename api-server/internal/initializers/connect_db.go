@@ -2,7 +2,6 @@ package initializers
 
 import (
 	"fmt"
-	"log"
 
 	"api-server/internal/models"
 
@@ -12,17 +11,16 @@ import (
 
 var DB *gorm.DB
 
-func ConnectDB(config *Config) {
-	var err error
+func ConnectDB(config *Config) (err error) {
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%s sslmode=disable TimeZone=Asia/Shanghai", config.DBHost, config.DBUserName, config.DBUserPassword, config.DBName, config.DBPort)
 
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
-		log.Fatal("Failed to connect to the Database")
+		return err
 	}
-	fmt.Println("🚀 Connected Successfully to the Database")
+	return err
 }
 
-func Automigrate() {
-	DB.AutoMigrate(&models.Post{})
+func Automigrate() (err error) {
+	return DB.AutoMigrate(&models.Post{})
 }

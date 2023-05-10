@@ -20,15 +20,24 @@ var (
 )
 
 func init() {
-	config, err := initializers.LoadConfig("../../")
+	config, err := initializers.LoadConfig("./")
 	if err != nil {
 		log.Fatal("🚀 Could not load environment variables", err)
 	}
 
-	initializers.ConnectDB(&config)
-	initializers.Automigrate()
+	err = initializers.ConnectDB(&config)
+	if err != nil {
+		log.Fatal("🚀 Could not initialize the database", err)
+	}
+	err = initializers.Automigrate()
+	if err != nil {
+		log.Fatal("🚀 Could not automigrate the database", err)
+	}
 
-	initializers.ConnectCache(&config)
+	err = initializers.ConnectCache(&config)
+	if err != nil {
+		log.Fatal("🚀 Could not initialize the cache", err)
+	}
 
 	PostController = controllers.NewPostController(initializers.DB, initializers.Cache)
 	PostRouteController = routes.NewRoutePostController(PostController)

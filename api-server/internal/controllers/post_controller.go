@@ -30,12 +30,14 @@ func (pc *PostController) FindPostsByCategory(ctx *gin.Context) {
 
 	fromDateTime, err := time.Parse("2006-01-02", fromDate)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"status": "error", "data": err})
 	}
 
 	toDateTime, err := time.Parse("2006-01-02", toDate)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
+		ctx.JSON(http.StatusBadRequest, gin.H{"status": "error", "data": err})
 	}
 
 	var posts []models.Post
@@ -46,11 +48,13 @@ func (pc *PostController) FindPostsByCategory(ctx *gin.Context) {
 		err = pc.DB.Where("category = ? AND  created_at >= ? AND created_at <= ?", postCategory, fromDateTime.Format(time.RFC3339Nano), toDateTime.Format(time.RFC3339Nano)).Find(&posts).Error
 		if err != nil {
 			log.Println(err)
+			ctx.JSON(http.StatusBadRequest, gin.H{"status": "error", "data": err})
 		}
 	} else {
 		err = json.Unmarshal([]byte(val), &posts)
 		if err != nil {
 			log.Println(err)
+			ctx.JSON(http.StatusBadRequest, gin.H{"status": "error", "data": err})
 		}
 	}
 	ctx.JSON(http.StatusOK, gin.H{"status": "success", "data": posts})

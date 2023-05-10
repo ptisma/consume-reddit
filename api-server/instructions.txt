@@ -1,3 +1,16 @@
+Instructions for local development:
+
+Build Docker image:
+docker build -t api-server .
+
+
+Run Docker container using built image:
+
+docker run -it -p 8000:8000 api-server
+
+
+Docs:
+
 https://codevoweb.com/build-restful-crud-api-with-golang/
 
 https://github.com/wpcodevo/golang-gorm-postgres/tree/golang-gorm-crud-api

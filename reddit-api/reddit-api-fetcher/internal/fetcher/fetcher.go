@@ -4,9 +4,8 @@ import (
 	"context"
 	"encoding/base64"
 	"encoding/json"
-	"fmt"
 	"io"
-	"io/ioutil"
+	"log"
 	"net/http"
 	"net/url"
 	"reddit-api-fetcher/internal/config"
@@ -70,8 +69,16 @@ func (s *SubredditFetcher) FetchToken() (Token, error) {
 }
 
 func (s *SubredditFetcher) FetchAndStorePosts(ctx context.Context, token Token) error {
+
+	baseURL, _ := url.Parse(s.URL + "/" + s.Category)
+	params := url.Values{}
+	params.Add("limit", strconv.Itoa(s.NumOfPosts))
+	baseURL.RawQuery = params.Encode()
+
+	URL := baseURL.String()
+
 	var err error
-	req, err := http.NewRequest("GET", s.URL, nil)
+	req, err := http.NewRequest("GET", URL, nil)
 	if err != nil {
 		return err
 	}
@@ -83,7 +90,7 @@ func (s *SubredditFetcher) FetchAndStorePosts(ctx context.Context, token Token) 
 		return err
 	}
 	defer res.Body.Close()
-	body, err := ioutil.ReadAll(res.Body)
+	body, err := io.ReadAll(res.Body)
 	if err != nil {
 		return err
 	}
@@ -91,10 +98,10 @@ func (s *SubredditFetcher) FetchAndStorePosts(ctx context.Context, token Token) 
 
 	jsonparser.ArrayEach(posts, func(value []byte, dataType jsonparser.ValueType, offset int, err error) {
 		//title, _, _, _ := jsonparser.Get(value, "data", "title")
-		fmt.Println("Whole post data")
-		fmt.Println(string(value))
-		err = s.Producer.StorePost(ctx, value)
-		fmt.Println(err)
+		log.Println("Whole post data")
+		log.Println(string(value))
+		err = s.Producer.StorePost(ctx, value, s.Category)
+		log.Println(err)
 
 	})
 
@@ -111,15 +118,8 @@ func GetSubredditFetcher(config *config.SubredditFetcherConfig, producer *produc
 	encodedData := data.Encode()
 	basicAuth := basicAuth(config.ClientID, config.ClientSecret)
 
-	baseURL, _ := url.Parse(config.URL + "/" + config.Category)
-	params := url.Values{}
-	params.Add("limit", strconv.Itoa(config.NumOfPosts))
-	baseURL.RawQuery = params.Encode()
-
-	URL := baseURL.String()
-
 	client := &http.Client{}
 
-	return &SubredditFetcher{EncodedData: encodedData, BasicAuth: basicAuth, UserAgentName: config.UserAgentName, URL: URL, Client: client, Producer: producer}, err
+	return &SubredditFetcher{EncodedData: encodedData, BasicAuth: basicAuth, UserAgentName: config.UserAgentName, URL: config.URL, Category: config.Category, NumOfPosts: config.NumOfPosts, Client: client, Producer: producer}, err
 
 }

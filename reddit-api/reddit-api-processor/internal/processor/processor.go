@@ -2,7 +2,6 @@ package processor
 
 import (
 	"fmt"
-	"log"
 	"reddit-api-processor/internal/config"
 	"reddit-api-processor/internal/model"
 
@@ -15,8 +14,6 @@ import (
 func ConnectDB(config *config.PostgresConfig) (*gorm.DB, error) {
 	var err error
 	dsn := fmt.Sprintf("host=%s user=%s password=%s dbname=%s port=%d sslmode=disable TimeZone=Asia/Shanghai", config.DBHostURI, config.DBUsername, config.DBUserPassword, config.DBName, config.DBPort)
-
-	fmt.Println("Connection string:", dsn)
 
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
@@ -122,28 +119,25 @@ func (p *Processor) ReadFromBroker() (<-chan amqp.Delivery, error) {
 
 }
 
-func (p *Processor) Process(body []byte, category string) model.Post {
+func (p *Processor) Process(body []byte, category string) (model.Post, error) {
 
-	title, _, _, _ := jsonparser.Get(body, "data", "title")
-	content, _, _, _ := jsonparser.Get(body, "data", "selftext")
+	title, _, _, err := jsonparser.Get(body, "data", "title")
+	content, _, _, err := jsonparser.Get(body, "data", "selftext")
 	category = category
 
 	post := model.Post{Title: string(title), Content: string(content), Category: category}
 
-	log.Println("Post:", post)
-
-	return post
+	return post, err
 
 }
 
-func (p *Processor) WriteToDB(post *model.Post) {
-	p.DB.AutoMigrate(&model.Post{})
-	p.DB.Create(post)
+func (p *Processor) WriteToDB(post *model.Post) error {
+	return p.DB.Create(post).Error
 
 }
 
 func (p *Processor) AutoMigrate() error {
-	return p.DB.AutoMigrate(&model.Message{})
+	return p.DB.AutoMigrate(&model.Post{})
 
 }
 

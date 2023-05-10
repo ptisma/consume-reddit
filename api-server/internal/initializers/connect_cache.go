@@ -1,6 +1,7 @@
 package initializers
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"strconv"
@@ -10,11 +11,11 @@ import (
 
 var Cache *redis.Client
 
-func ConnectCache(config *Config) {
+func ConnectCache(config *Config) (err error) {
 	hostURI := fmt.Sprintf("%s:%s", config.CacheHost, config.CachePort)
 	db, err := strconv.Atoi(config.CacheDBName)
 	if err != nil {
-		log.Fatal("Failed to connect to the Cache")
+		return err
 	}
 	Cache = redis.NewClient(&redis.Options{
 		Addr:     hostURI,
@@ -22,6 +23,8 @@ func ConnectCache(config *Config) {
 		Password: config.CacheUserPassword, // no password set
 		DB:       db,                       // use default DB
 	})
-	fmt.Println("🚀 Connected Successfully to the Cache")
-
+	ctx := context.Background()
+	res := Cache.Ping(ctx)
+	log.Println("res:", res)
+	return err
 }

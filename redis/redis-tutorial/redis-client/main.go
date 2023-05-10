@@ -28,6 +28,8 @@ func main() {
 	})
 
 	ctx := context.Background()
+	res := client.Ping(ctx)
+	fmt.Println("res", res)
 	post := Post{1, "Test", "hello world!", time.Now(), "Hot"}
 	b, err := json.Marshal(post)
 	if err != nil {

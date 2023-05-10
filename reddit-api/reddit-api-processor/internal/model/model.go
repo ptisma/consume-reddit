@@ -2,14 +2,7 @@ package model
 
 import (
 	"time"
-
-	"gorm.io/gorm"
 )
-
-type Message struct {
-	gorm.Model
-	Body string
-}
 
 type Post struct {
 	ID        uint      `gorm:"primaryKey"`

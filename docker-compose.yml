@@ -1,27 +1,107 @@
 version: "3.9"
 services:
-  rabbitmq:
-    image: "rabbitmq:3.11-management"
-    ports:
-      - "5672:5672"
-      - "15672:15672"
+  # rabbitmq:
+  #   build:
+  #     context: ./rabbitmq
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "5672:5672"
+  #     - "15672:15672"
+  #   healthcheck:
+  #     # test: [ "CMD", "rabbitmqctl", "status"]
+  #     # interval: 5s
+  #     # timeout: 20s
+  #     # retries: 5
+  #     test: ["CMD", "curl", "-f", "http://localhost:15672"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 5
+
   postgres:
-    image: "postgres:15.2-alpine3.17"
+    build:
+      context: ./postgresql
+      dockerfile: Dockerfile
     ports:
       - "5435:5432"
     environment:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_USER=postgres
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready", "-d", "db_prod"]
+      interval: 30s
+      timeout: 60s
+      retries: 5
+      start_period: 80s
+
   pgadmin:
     image: "dpage/pgadmin4:7.1"
+    depends_on:
+      postgres:
+        condition: service_healthy
     ports:
       - "8080:80"
     environment:
       - PGADMIN_DEFAULT_EMAIL=test@mail.com
       - PGADMIN_DEFAULT_PASSWORD=test1234
+
   redis:
     image: "redis/redis-stack-server:6.2.6-v7"
     environment:
+      - REDIS_PASSWORD=redis
       - REDIS_ARGS=--requirepass redis
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli", "--raw", "-a redis", "incr", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # reddit-api-processor:
+  #   build:
+  #     context: ./reddit-api/reddit-api-processor
+  #     dockerfile: Dockerfile
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   environment:
+  #     - BROKER_URI=amqp://guest:guest@host.docker.internal:5672/
+  #     - TOPIC_NAME=logs_topic
+  #     - ROUTING_KEY=kek
+  #     - DB_HOST_URI=host.docker.internal
+  #     - DB_USER_NAME=postgres
+  #     - DB_USER_PASSWORD=postgres
+  #     - DB_NAME=test
+  #     - DB_PORT=5435
+
+  # reddit-api-fetcher:
+  #   build:
+  #     context: ./reddit-api/reddit-api-fetcher/
+  #     dockerfile: Dockerfile
+  #   depends_on:
+  #     rabbitmq:
+  #       condition: service_healthy
+  #   environment:
+  #     - BROKER_URI=amqp://guest:guest@host.docker.internal:5672/
+  #     - TOPIC_NAME=logs_topic
+  #     - ROUTING_KEY=kek
+  #     - REDDIT_USERNAME=beskucnik_na_feru
+  #     - REDDIT_PASSWORD=Wizard21298
+  #     - CLIENT_ID=95wusYL4TfUPURtBnswGQg
+  #     - CLIENT_SECRET=qlMMTd2bN3ijKT7wrRlJtGpxQVyZ2w
+  #     - USER_AGENT_NAME=reddit-api-scraper-test:0.01 by Pepe
+  #     - URL=https://oauth.reddit.com/r/croatia
+  #     - Category=hot
+  #     - NUM_OF_POSTS=2
+
+  # api-server:
+  #   build:
+  #     context: ./api-server
+  #     dockerfile: Dockerfile
+  #   depends_on:
+  #     postgres:
+  #       condition: service_healthy
+  #     redis:
+  #       condition: service_healthy

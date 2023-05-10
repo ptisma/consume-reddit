@@ -15,7 +15,7 @@ type Config struct {
 	CacheUserName     string `mapstructure:"REDIS_USER"`
 	CacheUserPassword string `mapstructure:"REDIS_PASSWORD"`
 	CacheDBName       string `mapstructure:"REDIS_DB"`
-	CacheHost         string `mapstructure:"CACHE_HOST"`
+	CacheHost         string `mapstructure:"REDIS_HOST"`
 }
 
 func LoadConfig(path string) (config Config, err error) {

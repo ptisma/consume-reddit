@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"reddit-api-fetcher/internal/config"
 	"reddit-api-fetcher/internal/fetcher"
@@ -22,34 +21,34 @@ func main() {
 	// Load the fetcher's config
 	fetcherConfig, err := config.GetSubredditFetcherConfig()
 	if err != nil {
-		log.Panicf(err)
+		log.Fatal(err)
 	}
 	log.Println("fetcherConfig", fetcherConfig)
 
 	// Init a producer
 	producer, err := producer.GetRabbitMQProducer(producerConfig)
 	if err != nil {
-		log.Panicf(err)
+		log.Fatal(err)
 	}
 	log.Println("producer", producer)
 
 	// Init a fetcher
 	fetcher, err := fetcher.GetSubredditFetcher(fetcherConfig, producer)
 	if err != nil {
-		log.Panicf(err)
+		log.Fatal(err)
 	}
 
 	// Acquire a token for Reddit API
 	token, err := fetcher.FetchToken()
 	if err != nil {
-		log.Panicf(err)
+		log.Fatal(err)
 	}
 	log.Println("token", token)
 
 	// Fetch and store posts
 	err = fetcher.FetchAndStorePosts(ctx, token)
 	if err != nil {
-		fmt.Println(err)
+		log.Fatal(err)
 	}
 
 }
