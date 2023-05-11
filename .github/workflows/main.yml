@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - 'main'
-      
+
 jobs:
   IdentifyFolderChanges:
     uses: ./.github/workflows/identify-folder-changes.yml
@@ -16,4 +16,5 @@ jobs:
     with:
       context-path: ./api-server/
       dockerfile-path: ./api-server/Dockerfile
+    secrets: inherit
       

@@ -3,12 +3,17 @@ name: Reusable workflow for building and pushing Docker image to Docker Hub repo
 on:
   workflow_call:
     inputs:
-      context-path:
+      contextPath:
         required: true
         type: string
-      dockerfile-path:
+      dockerfilePath:
         required: true
         type: string
+    secrets:
+      DOCKERHUB_USERNAME:
+        required: true
+      DOCKERHUB_PASSWORD :
+        required: true
 
 jobs:
   BuildAndPushImage:
@@ -26,8 +31,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: ${{ inputs.context-path }}
-          file: ${{ inputs.dockerfile-path }}
+          context: ${{ inputs.contextPath }}
+          file: ${{ inputs.dockerfilePath }}
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/api-server:latest
           build-args: |
