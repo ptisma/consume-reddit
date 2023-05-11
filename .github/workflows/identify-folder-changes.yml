@@ -1,0 +1,38 @@
+name: Reusable workflow for detecting folder changes
+
+on:
+  workflow_call:
+    # Map the workflow outputs to job outputs
+    outputs:
+      api-server:
+        description: "The first output string"
+        value: ${{ jobs.IdentifyFolderChanges.outputs.api-server }}
+      reddit-api-fetcher:
+        description: "The second output string"
+        value: ${{ jobs.IdentifyFolderChanges.outputs.reddit-api-fetcher }}
+      reddit-api-processor:
+        description: "The third output string"
+        value: ${{ jobs.IdentifyFolderChanges.outputs.reddit-api-processor }}
+
+jobs:
+  IdentifyFolderChanges:
+    # Required permissions
+    permissions: read-all
+    runs-on: ubuntu-latest
+    # Set job outputs to values from filter step
+    outputs:
+      api-server: ${{ steps.filter.outputs.api-server }}
+      reddit-api-fetcher : ${{ steps.filter.outputs.reddit-api-fetcher }}
+      reddit-api-processor: ${{ steps.filter.outputs.reddit-api-processor }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            api-server:
+              - 'api-server/**'
+            reddit-api-fetcher:
+              - 'reddit-api/reddit-api-fetcher/**'
+            reddit-api-processor:
+              - 'reddit-api/reddit-api-processor/**'
