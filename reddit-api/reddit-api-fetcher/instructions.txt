@@ -10,3 +10,4 @@ docker run -it -e BROKER_URI='amqp://guest:guest@host.docker.internal:5672/' -e 
 erere
 
 
+sdfdsf
