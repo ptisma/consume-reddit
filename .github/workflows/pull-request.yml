@@ -2,10 +2,8 @@ name: Pull request
 run-name: ${{ github.actor }} is creating pull request on main 🚀
 on:
   pull_request:
-    types:
-      - opened
     branches:
-      - 'main/**' 
+      - main
 
 jobs:
   IdentifyFolderChanges:
@@ -13,7 +11,6 @@ jobs:
     permissions: read-all
   ApiServer:
     needs: IdentifyFolderChanges
-    if: ${{ needs.IdentifyFolderChanges.outputs.api-server == 'true' }}
     uses: ./.github/workflows/go-app.yml
     permissions: read-all
     with:
