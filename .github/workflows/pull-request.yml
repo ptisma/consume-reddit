@@ -1,0 +1,36 @@
+name: Push
+run-name: ${{ github.actor }} is creating push on main 🚀
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  IdentifyFolderChanges:
+    uses: ./.github/workflows/identify-folder-changes.yml
+    permissions: read-all
+  ApiServer:
+    needs: IdentifyFolderChanges
+    if: ${{ needs.IdentifyFolderChanges.outputs.api-server == 'true' }}
+    uses: ./.github/workflows/build-and-push-image.yml
+    with:
+      contextPath: ./api-server/
+      dockerfilePath: ./api-server/Dockerfile
+    secrets: inherit
+  RedditApiFetcher:
+    needs: IdentifyFolderChanges
+    if: ${{ needs.IdentifyFolderChanges.outputs.reddit-api-fetcher == 'true' }}
+    uses: ./.github/workflows/build-and-push-image.yml
+    with:
+      contextPath: .reddit-api/reddit-api-fetcher/
+      dockerfilePath: .reddit-api/reddit-api-fetcher/Dockerfile
+    secrets: inherit
+  RedditApiprocessor:
+    needs: IdentifyFolderChanges
+    if: ${{ needs.IdentifyFolderChanges.outputs.reddit-api-processor == 'true' }}
+    uses: ./.github/workflows/build-and-push-image.yml
+    with:
+      contextPath: .reddit-api/reddit-api-processor/Dockerfile
+      dockerfilePath: .reddit-api/reddit-api-processor/Dockerfile
+    secrets: inherit
+      
