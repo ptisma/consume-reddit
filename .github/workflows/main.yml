@@ -4,12 +4,12 @@ on:
   push:
     branches:
       - 'main'
-permissions: read-all
+
 
 jobs:
   IdentifyFolderChanges:
     uses: ./.github/workflows/identify-folder-changes.yml
-  
+    permissions: read-all
   ApiServer:
     runs-on: ubuntu-latest
     needs: IdentifyFolderChanges
