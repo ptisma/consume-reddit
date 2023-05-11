@@ -1,9 +1,11 @@
-name: Push
-run-name: ${{ github.actor }} is creating push on main 🚀
+name: Pull request
+run-name: ${{ github.actor }} is creating pull request on main 🚀
 on:
-  push:
+  pull_request:
+    types:
+      - opened
     branches:
-      - 'main'
+      - 'main/**' 
 
 jobs:
   IdentifyFolderChanges:
@@ -12,25 +14,9 @@ jobs:
   ApiServer:
     needs: IdentifyFolderChanges
     if: ${{ needs.IdentifyFolderChanges.outputs.api-server == 'true' }}
-    uses: ./.github/workflows/build-and-push-image.yml
+    uses: ./.github/workflows/go-app.yml
+    permissions: read-all
     with:
-      contextPath: ./api-server/
-      dockerfilePath: ./api-server/Dockerfile
-    secrets: inherit
-  RedditApiFetcher:
-    needs: IdentifyFolderChanges
-    if: ${{ needs.IdentifyFolderChanges.outputs.reddit-api-fetcher == 'true' }}
-    uses: ./.github/workflows/build-and-push-image.yml
-    with:
-      contextPath: .reddit-api/reddit-api-fetcher/
-      dockerfilePath: .reddit-api/reddit-api-fetcher/Dockerfile
-    secrets: inherit
-  RedditApiprocessor:
-    needs: IdentifyFolderChanges
-    if: ${{ needs.IdentifyFolderChanges.outputs.reddit-api-processor == 'true' }}
-    uses: ./.github/workflows/build-and-push-image.yml
-    with:
-      contextPath: .reddit-api/reddit-api-processor/Dockerfile
-      dockerfilePath: .reddit-api/reddit-api-processor/Dockerfile
-    secrets: inherit
+      path: ./api-server/
+  
       
