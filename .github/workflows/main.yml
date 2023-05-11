@@ -48,6 +48,6 @@ jobs:
           file: ./api-server/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/clockbox:latest
-          build-args:
-            - --progress=plain
+          build-args: |
+            progress=plain 
       
