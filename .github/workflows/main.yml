@@ -6,7 +6,7 @@ on:
       - 'main'
 jobs:
   IdentifyFolderChanges:
-    uses: ./identify-folder-changes.yml
+    uses: ./.github/workflows/identify-folder-changes.yml
   
   ApiServer:
     runs-on: ubuntu-latest
