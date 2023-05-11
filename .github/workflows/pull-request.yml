@@ -6,9 +6,9 @@ on:
       - main
 
 jobs:
-  IdentifyFolderChanges:
-    uses: ./.github/workflows/identify-folder-changes.yml
-    permissions: read-all
+  # IdentifyFolderChanges:
+  #   uses: ./.github/workflows/identify-folder-changes.yml
+  #   permissions: read-all
   ApiServer:
     needs: IdentifyFolderChanges
     uses: ./.github/workflows/go-app.yml
