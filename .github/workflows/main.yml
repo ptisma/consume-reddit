@@ -19,7 +19,7 @@ jobs:
       - uses: dorny/paths-filter@v2
         id: filter
         with:
-          filters: |s
+          filters: |
             api-server:
               - 'api-server/**'
             reddit-api-fetcher:
