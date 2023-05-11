@@ -14,6 +14,8 @@ on:
         description: "The third output string"
         value: ${{ jobs.IdentifyFolderChanges.outputs.reddit-api-processor }}
 
+permissions: read-all
+
 jobs:
   IdentifyFolderChanges:
     # Required permissions
