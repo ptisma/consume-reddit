@@ -49,5 +49,6 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/clockbox:latest
           build-args: |
-            progress=plain 
+            progress=plain
+            no-cache
       
