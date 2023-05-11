@@ -44,8 +44,8 @@ jobs:
       - name: Build and push
         uses: docker/build-push-action@v4
         with:
-          context: api-server
-          file: ./Dockerfile
+          context: .
+          file: ./api-server/Dockerfile
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/clockbox:latest
       
