@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: reddit-api-processor-deployment
+  labels:
+    app: reddi-api-processor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: reddi-api-processor
+  template:
+    metadata:
+      labels:
+        app: reddi-api-processor
+    spec:
+      containers:
+      - name: reddi-api-processor
+        image: ptisma/reddi-api-processor:latest

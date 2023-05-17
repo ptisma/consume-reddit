@@ -1,0 +1,42 @@
+Useful docs and examples:
+https://jeshocarmel.github.io/jekyll/update/2020/09/28/minikube_go_application.html#minikube
+https://artifacthub.io/packages/helm/bitnami/redis?modal=install
+https://developer.redis.com/create/kubernetes/kubernetes-operator/
+https://jeshocarmel.github.io/jekyll/update/2020/09/24/containerize_go_application.html
+https://github.com/jeshocarmel/ip_location_mapper
+
+
+We are going to deploy Redis using Helm chart, more specifically Redis® Helm Chart which deploys the Reddis database in Master-slave architecture.
+https://github.com/bitnami/charts/tree/main/bitnami/redis
+https://artifacthub.io/packages/helm/bitnami/redis
+https://github.com/bitnami/charts/blob/main/bitnami/redis/values.yaml
+
+Steps:
+
+0. Add a helm repository:
+helm repo add bitnami https://charts.bitnami.com/bitnami
+
+1. Create a configuration file where we specify some of our values for helm chart to customize the Redis.
+
+config.yml
+
+2. Create namespace:
+kubectl create namespace redis
+
+3. Deploy a Helm chart using the config.yml
+
+helm install my-redis bitnami/redis --namespace redis --version 17.10.3 --values config.yml
+
+4. To test outside the cluster use:
+kubectl port-forward -n redis service/redis-master 6379:6379
+
+
+Rest files in this folder are part of examples from jesocarmel.github.io
+
+
+
+
+
+
+
+

@@ -1,0 +1,16 @@
+# define default database user, name, and password for PostgreSQL deployment
+auth:
+  enablePostgresUser: true
+  postgresPassword: "StrongPassword"
+  username: "postgres"
+  password: "postgres"
+  database: "reddit_db"
+
+# The postgres helm chart deployment will be using PVC postgresql-data-claim
+primary:
+  persistence:
+    enabled: true
+    existingClaim: "postgres-pv-claim"
+# Sometimes the cluster settings don't give the running container enough permissions to actuall write to the mounted volume by default.
+volumePermissions:
+  enabled: true

@@ -1,0 +1,12 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: Binding
+metadata:
+  name: binding2
+spec:
+  # vhost: "/test-vhost" # default to '/' if not provided
+  source: reddit-exchange # an existing exchange
+  destination: reddit-queue # an existing queue or exchange
+  destinationType: queue # can be 'queue' or 'exchange'
+  routingKey: "reddit-routing-key"
+  rabbitmqClusterReference:
+    name: reddit-cluster # rabbitmqCluster must exist in the same namespace as this resource

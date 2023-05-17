@@ -1,0 +1,63 @@
+https://phoenixnap.com/kb/postgresql-kubernetes
+https://www.airplane.dev/blog/deploy-postgres-on-kubernetes
+
+From scratch approach:
+0. kubectl create namespace postgres && kubectl config set-context --current --namespace=postgres
+1. Apply ConfigMap configmap.yaml
+kubectl apply -f configmap.yaml
+2. Apply PersistentVolume and PersistentVolumeClaim volume.yaml
+kubectl apply -f volume.yaml
+3. Apply Deployment deployment.yaml
+kubectl apply -f deployment.yaml
+4. Apply Service service.yaml
+kubectl apply -f service.yaml
+
+5. Connect to DB and create it
+kubectl exec -it [pod-name] --  psql -h localhost -U admin --password -p 5432 postgresdb
+\l
+
+6. Run service tunnel to access outside k8
+minikube service -n postgres postgres --url
+
+
+Checks:
+kubectl get configmap
+kubectl get pvc
+kubectl get deployments
+kubectl get pods
+kubectl get services
+
+
+
+Useful docs and examples:
+https://adamtheautomator.com/postgres-to-kubernetes/
+
+We are going to deploy PostgreSQL using Helm chart (its basically bootstrapped service, deployment, stateful set, config map etc...)
+https://artifacthub.io/packages/helm/bitnami/postgresql
+
+Steps:
+
+0. Add a helm repository:
+helm repo add bitnami https://charts.bitnami.com/bitnami
+
+1. Create namespace:
+kubectl create namespace postgresql
+
+2. Create PV and PVC:
+volume.yaml
+kubectl apply -f volume.yaml -n postgresql
+
+3. Create custom config file for helm chart:
+config.yaml
+
+4. Deploy helm chart:
+helm install my-postgresql -n postgresql bitnami/postgresql --version 12.5.1 --values config.yaml
+
+5. Check status:
+kubectl get all -n postgresql
+
+6. Expose the service outside the cluster:
+kubectl port-forward service/my-postgresql 5435:5432 -n postgresql
+
+
+

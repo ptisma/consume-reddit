@@ -1,0 +1,17 @@
+replica:
+  replicaCount: 1 # downgraded slaveCount from '3' to '1'
+
+networkPolicy:
+  enabled: false # Enable creation of NetworkPolicy resources. This enables the app to discover the cluster easily.
+  allowExternal: true # When true, Redis&reg; will accept connections from any source (with the correct destination port). 
+
+auth:
+  enabled: true  # Enable password authentication, default user is 'defualt'
+  password: redis # Defaults to a random 10-character alphanumeric string if not set
+
+# Create ACL user redis instead of default
+commonConfiguration: |-
+  user redis allcommands allkeys on >redis 
+
+persistence:
+  enabled: false # changed persistence enabled to false.

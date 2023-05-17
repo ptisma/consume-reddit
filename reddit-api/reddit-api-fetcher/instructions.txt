@@ -1,0 +1,13 @@
+Instructions for local development:
+
+Build Docker image:
+docker build -t reddit-api-fetcher-dev .
+
+Run Docker container using built image:
+docker run -it -e BROKER_URI='amqp://guest:guest@host.docker.internal:5672/' -e TOPIC_NAME='logs_topic' -e ROUTING_KEY='kek' -e REDDIT_USERNAME='username' -e REDDIT_PASSWORD='password' -e CLIENT_ID='id' -e CLIENT_SECRET='secret' -e USER_AGENT_NAME='reddit-api-scraper-test:0.01 by Pepe' -e URL='https://oauth.reddit.com/r/croatia' -e CATEGORY='hot' -e NUM_OF_POSTS='2' reddit-api-fetcher-dev
+
+
+erere
+
+
+sdfdsf

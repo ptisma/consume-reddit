@@ -1,0 +1,66 @@
+name: Push
+run-name: ${{ github.actor }} is creating push on main 🚀
+on:
+  push:
+    branches:
+      - 'main'
+
+jobs:
+  IdentifyFolderChanges:
+    uses: ./.github/workflows/identify-folder-changes.yml
+    permissions: read-all
+  ApiServer:
+    needs: IdentifyFolderChanges
+    if: ${{ needs.IdentifyFolderChanges.outputs.api-server == 'true' }}
+    uses: ./.github/workflows/build-and-push-image.yml
+    with:
+      contextPath: ./api-server/
+      dockerfilePath: ./api-server/Dockerfile
+      imageName: api-fetcher
+    secrets: inherit
+  RedditApiFetcher:
+    needs: IdentifyFolderChanges
+    if: ${{ needs.IdentifyFolderChanges.outputs.reddit-api-fetcher == 'true' }}
+    uses: ./.github/workflows/build-and-push-image.yml
+    with:
+      contextPath: ./reddit-api/reddit-api-fetcher/
+      dockerfilePath: ./reddit-api/reddit-api-fetcher/Dockerfile
+      imageName: reddit-api-fetcher
+    secrets: inherit
+  RedditApiprocessor:
+    needs: IdentifyFolderChanges
+    if: ${{ needs.IdentifyFolderChanges.outputs.reddit-api-processor == 'true' }}
+    uses: ./.github/workflows/build-and-push-image.yml
+    with:
+      contextPath: ./reddit-api/reddit-api-processor/
+      dockerfilePath: ./reddit-api/reddit-api-processor/Dockerfile
+      imageName: reddit-api-processor
+    secrets: inherit
+  Postgres:
+    needs: IdentifyFolderChanges
+    if: ${{ needs.IdentifyFolderChanges.outputs.postgres == 'true' }}
+    uses: ./.github/workflows/build-and-push-image.yml
+    with:
+      contextPath: ./postgresql/
+      dockerfilePath: /postgresql/Dockerfile
+      imageName: postgres
+    secrets: inherit
+  Rabbitmq:
+    needs: IdentifyFolderChanges
+    if: ${{ needs.IdentifyFolderChanges.outputs.rabbitmq == 'true' }}
+    uses: ./.github/workflows/build-and-push-image.yml
+    with:
+      contextPath: ./rabbitmq/
+      dockerfilePath: ./rabbitmq/Dockerfile
+      imageName: rabbitmq
+    secrets: inherit
+  Redis:
+    needs: IdentifyFolderChanges
+    if: ${{ needs.IdentifyFolderChanges.outputs.redis == 'true' }}
+    uses: ./.github/workflows/build-and-push-image.yml
+    with:
+      contextPath: ./redis/
+      dockerfilePath: ./redis/Dockerfile
+      imageName: redis
+    secrets: inherit
+      

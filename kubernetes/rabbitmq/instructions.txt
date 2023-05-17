@@ -1,0 +1,61 @@
+Useful docs and examples:
+https://www.rabbitmq.com/kubernetes/operator/operator-overview.html
+https://www.rabbitmq.com/kubernetes/operator/install-operator.html
+https://www.rabbitmq.com/kubernetes/operator/using-operator.html
+https://github.com/rabbitmq/cluster-operator/tree/main/docs/examples
+https://github.com/bitnami/charts/tree/main/bitnami/rabbitmq-cluster-operator
+https://www.rabbitmq.com/kubernetes/operator/install-topology-operator.html
+
+
+
+We are going to deploy the RabbitMQ Cluster k8 operator and RabbitMQ Messaging Topology Operator (so we can declare the resources as infrastructure as code, instead of creating them with methods inside application code).
+This can be done with single command.
+(They watch all namespaces by default ?)
+https://artifacthub.io/packages/helm/bitnami/rabbitmq-cluster-operator
+
+Steps:
+
+0. Add a helm repository:
+helm repo add bitnami https://charts.bitnami.com/bitnami
+
+1. Create a namespaces:
+kubectl create namespace rabbitmq (best practice for production would be to deploy the operator and CRDS in separate namespaces but to easier track the project we are going to do in same one)
+
+2. Deploy a helm chart:
+helm install my-rabbitmq-cluster-operator -n rabbitmq bitnami/rabbitmq-cluster-operator --version 3.3.2
+
+3. Create a RabbitMQ cluster:
+kubectl apply -n rabbitmq -f cluster.yaml
+
+4. Test outside the cluster:
+kubectl port-forward -n rabbitmq service/reddit-cluster 5672:5672
+
+5. Create a RabbitMQ Exchange:
+kubectl apply -n rabbitmq -f exchange.yaml
+
+6. Create a RabbitMQ Queue:
+kubectl apply -n rabbitmq -f queue.yaml
+
+7. Create a RabbitMQ Binding:
+kubectl apply -n rabbitmq -f binding.yaml
+
+8. Create a RAbbitMQ User:
+kubectl apply -n rabbitmq -f user.yaml
+
+
+kubectl apply -n rabbitmq -f secret.yaml
+
+kubectl get secret -n rabbitmq reddit-cluster-default-user -o jsonpath="{.data.<DATA>}" | base64 --decode
+
+
+
+
+
+
+
+
+
+
+
+
+
